@@ -112,7 +112,6 @@
     }
 
     function mouseEnterAnimate(point, text){
-        console.log(point);
         point.animate({transform: 's1.2',fill: "red", stroke: "black", "stroke-width": 2}, 200);
         text.addClass("hover");
         $("#tech-label").html(point.data("name")).addClass("active").attr("style","top:"+(point.attrs.cy-10)+"px;left:"+(point.attrs.cx+15)+"px;");
@@ -198,12 +197,11 @@
             name: "General",
             data: {
                 "Java": 1,
-                "Ruby": 2,
+                "Ruby": 5,
                 "Javascript": 3,
-                "Shell": 4,
-                "Html": 5,
-                "CSS": 6,
-                "XML": 7
+                "Html": 4,
+                "CSS": 2,
+                "XML": 6
             }
         }
         var build_and_deploy_tools = {
