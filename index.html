@@ -9,10 +9,13 @@
             display: block;
             padding: 1px 2px;
             margin-top: 5px;
+            cursor: pointer;
         }
 
         .hover {
             border-color: red;
+            background-color: red;
+            color: white;
         }
 
         .tech-group,
@@ -94,6 +97,16 @@
         return originY + y;
     }
 
+    function mouseEnterAnimate(point, text){
+        point.animate({transform: 's1.2',fill: "red", stroke: "black", "stroke-width": 2}, 200);
+        text.addClass("hover");
+    }
+
+    function mouseOutAnimate(point, text){
+        point.animate({transform: 's1',fill: "#9ACD32", "stroke-width": 0}, 200);
+        text.removeClass("hover");
+    }
+
     function drawPointForEachTech(techs, maxRadius, paper, width, height, xPosition, yPosition) {
         var interval = maxRadius / 12,
                 st = paper.set(),
@@ -108,24 +121,18 @@
             st.push(point);
             $("<span>").html(key).attr({id: point.data("id"), class: "tech"}).appendTo(techsContainer);
             $("#" + point.data("id")).on("mouseenter", function () {
-                console.log(this);
-                point.animate({fill: "red"}, 500);
+                mouseEnterAnimate(point,$(this));
             });
-            $("#" + point.data("id")).on("click",function(){
-                console.log(this);
 
-            });
             $("#" + point.data("id")).on("mouseout", function () {
-                point.animate({fill: "#9ACD32"}, 500);
+                mouseOutAnimate(point,$(this));
             });
         });
         st.attr({fill: "#9ACD32", "stroke-width": 0});
         st.hover(function () {
-            this.animate({fill: "red"}, 500);
-            $("#" + this.data("id")).addClass("hover");
+            mouseEnterAnimate(this,$("#" + this.data("id")));
         }, function () {
-            this.animate({fill: "#9ACD32"}, 500);
-            $("#" + this.data("id")).removeClass("hover");
+            mouseOutAnimate(this,$("#" + this.data("id")));
         });
     }
     window.onload = function () {
