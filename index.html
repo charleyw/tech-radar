@@ -12,6 +12,20 @@
             cursor: pointer;
         }
 
+        #tech-label{
+            display: none;
+            border: 1px solid;
+        }
+
+        #tech-label.active{
+            padding: 1px 2px;
+            display: block;
+            position: fixed;
+            border: 1px solid black;
+
+        }
+
+        .active,
         .hover {
             border-color: red;
             background-color: red;
@@ -98,13 +112,16 @@
     }
 
     function mouseEnterAnimate(point, text){
+        console.log(point);
         point.animate({transform: 's1.2',fill: "red", stroke: "black", "stroke-width": 2}, 200);
         text.addClass("hover");
+        $("#tech-label").html(point.data("name")).addClass("active").attr("style","top:"+(point.attrs.cy-10)+"px;left:"+(point.attrs.cx+15)+"px;");
     }
 
     function mouseOutAnimate(point, text){
         point.animate({transform: 's1',fill: "#9ACD32", "stroke-width": 0}, 200);
         text.removeClass("hover");
+        $("#tech-label").removeClass("active");
     }
 
     function drawPointForEachTech(techs, maxRadius, paper, width, height, xPosition, yPosition) {
@@ -226,6 +243,7 @@
     };
 </script>
 <div id="container">
+    <span id="tech-label"></span>
     <div id="general" class="tech-group"><h2>General</h2></div>
     <div id="web_development" class="tech-group"><h2>Web development</h2></div>
     <div id="build" class="tech-group"><h2>Build & Deploy tools</h2></div>
