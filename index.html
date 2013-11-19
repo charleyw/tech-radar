@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <style media="screen">
+        .tech {
+            z-index: 1000;
+            border-style: solid;
+        }
+
+        .hover {
+            border-color: red;
+        }
+    </style>
+    <script src="raphael.js"></script>
+    <script src="zepto.js"></script>
+</head>
+<body>
+<script>
+    function buildPathString(x, y, tX, tY) {
+        return "M" + x + " " + y + "L" + tX + " " + tY;
+    }
+
+    function pointAtNegativeX(originX, x) {
+        return originX - x;
+    }
+
+    function pointAtPositiveX(originX, x) {
+        return originX + x;
+    }
+
+    function pointAtNegativeY(originY, y) {
+        return originY - y;
+    }
+
+    function pointAtPositiveY(originY, y) {
+        return originY + y;
+    }
+
+    function drawPointForEachTech(data, maxRadius, paper, width, height) {
+        var interval = maxRadius / 12,
+                st = paper.set();
+        $.each(data, function (key, value) {
+            var tmpR = interval * value,
+                    x = Math.random() * (tmpR),
+                    y = Math.sqrt(tmpR * tmpR - x * x),
+                    point = paper.circle(pointAtPositiveX(width / 2, x), pointAtPositiveY(height / 2, y), 10).data({"name": key, "id": value});
+
+            st.push(point);
+            $("<span>").html(key).attr("id", value).attr("style", "position:fixed;top:" + (30 * value) + "px;right:" + 20 + "px;").addClass("tech").appendTo("#container");
+            $("#" + value).on("mouseenter", function () {
+                point.animate({fill: "red"}, 500);
+            });
+            $("#" + value).on("mouseout", function () {
+                point.animate({fill: "#9ACD32"}, 500);
+            });
+        });
+        st.attr({fill: "#9ACD32", "stroke-width": 0});
+        st.hover(function () {
+            this.animate({fill: "red"}, 500);
+            $("#" + this.data("id")).addClass("hover");
+        }, function () {
+            this.animate({fill: "#9ACD32"}, 500);
+            $("#" + this.data("id")).removeClass("hover");
+        });
+    }
+    window.onload = function () {
+        // Creates canvas 320 × 200 at 10, 50
+        var width = window.innerWidth,
+                height = window.innerHeight,
+                paper = Raphael(0, 0, width, height),
+                maxRadius = width < height ? width / 2 - 10 : height / 2 - 10,
+                increaseRadius = (maxRadius - 100) / 3;
+
+// Creates circle at x = 50, y = 40, with radius 10
+        var circle = paper.circle(width / 2, height / 2, maxRadius);
+        var circle1 = paper.circle(width / 2, height / 2, maxRadius - increaseRadius);
+        var circle2 = paper.circle(width / 2, height / 2, maxRadius - increaseRadius * 2);
+        var circle3 = paper.circle(width / 2, height / 2, 100);
+
+        circle.attr({fill: "#f5f5f5", stroke: "#FFF", "stroke-width": 1});
+        circle1.attr({fill: "#f5f5f5", stroke: "#FFF", "stroke-width": 5});
+        circle2.attr({fill: "#f5f5f5", stroke: "#FFF", "stroke-width": 5});
+        circle3.attr({fill: "#f5f5f5", stroke: "#FFF", "stroke-width": 5});
+
+        var c = paper.path(buildPathString(width / 2, 11, width / 2, height - 11));
+        var c1 = paper.path(buildPathString(width / 2 - maxRadius, height / 2, width / 2 + maxRadius, height / 2));
+        c1.attr({stroke: "#FFF", "stroke-width": 2});
+        c.attr({stroke: "#FFF", "stroke-width": 2});
+
+        var data = {
+            "Spring": 1,
+            "JSP": 2,
+            "Gradle": 3,
+            "Servlet": 4,
+            "YUI": 6,
+            "jQuery": 7,
+            "Omniture": 11,
+            "Cucumber": 12
+        }
+
+        var web_dev = {
+            name: "Web development",
+            data: {
+                "Spring": 1,
+                "JSP": 2,
+                "Servlet": 3,
+                "YUI": 4,
+                "jQuery": 5,
+                "Omniture": 6,
+                "backbone.js": 7,
+                "zepto.js": 8,
+                "mustache.js": 9,
+                "mustache(java)": 10
+            }
+        }
+
+        var general = {
+            name: "",
+            data: {
+                "Java": 1,
+                "Ruby": 2,
+                "Javascript": 3,
+                "Shell": 4,
+                "Html": 5,
+                "CSS": 6,
+                "XML": 7
+            }
+        }
+        var build_and_deploy_tools = {
+            name: "",
+            data: {
+                "gradle": 1,
+                "buildr": 2,
+                "bundler": 3,
+                "rvm": 4,
+                "shell": 5,
+                "rea-ec2": 6,
+                "chef": 7,
+                "ssh": 8,
+                "capistrano": 9,
+                "linux": 10,
+                "rpm": 11
+            }
+        }
+        var test = {
+            name: "",
+            data: {
+                "junit": 1,
+                "cucumber": 2,
+                "copybara": 3,
+                "selenuim": 4,
+                "jasmine": 5,
+                "jslint": 6,
+                "karma": 6
+            }
+        }
+        drawPointForEachTech(data, maxRadius, paper, width, height);
+    };
+</script>
+<span class="tech"></span>
+
+<div id="container"></div>
+</body>
+</html>
