@@ -5,12 +5,69 @@
     <style media="screen">
         .tech {
             z-index: 1000;
-            border-style: solid;
+            border: 1px solid;
+            display: block;
+            padding: 1px 2px;
+            margin-top: 5px;
         }
 
         .hover {
             border-color: red;
         }
+
+        .tech-group,
+        .tech-group h2{
+            position: fixed;
+        }
+        .tech-group h2{
+            opacity: 0.3;
+            z-index: -2;
+        }
+
+        #general{
+            top:10px;
+            left: 10px;
+        }
+
+        #general h2 {
+            top:25%;
+            left:25%;
+        }
+
+        #web_development{
+            top:10px;
+            right: 10px;
+        }
+
+        #web_development h2{
+            top:25%;
+            right:25%;
+        }
+
+        #build{
+            top:50%;
+            left: 10px;
+        }
+
+        #build h2{
+            bottom:25%;
+            right:25%;
+        }
+
+        #test{
+            top:50%;
+            right: 10px;
+        }
+
+        #test h2{
+            bottom:25%;
+            left:25%;
+        }
+
+        svg{
+            z-index: -1;
+        }
+
     </style>
     <script src="raphael.js"></script>
     <script src="zepto.js"></script>
@@ -37,21 +94,28 @@
         return originY + y;
     }
 
-    function drawPointForEachTech(data, maxRadius, paper, width, height) {
+    function drawPointForEachTech(techs, maxRadius, paper, width, height, xPosition, yPosition) {
         var interval = maxRadius / 12,
-                st = paper.set();
-        $.each(data, function (key, value) {
+                st = paper.set(),
+                techsContainer = $("#"+techs.id);
+
+        $.each(techs.data, function (key, value) {
             var tmpR = interval * value,
                     x = Math.random() * (tmpR),
                     y = Math.sqrt(tmpR * tmpR - x * x),
-                    point = paper.circle(pointAtPositiveX(width / 2, x), pointAtPositiveY(height / 2, y), 10).data({"name": key, "id": value});
+                    point = paper.circle(xPosition(width / 2, x), yPosition(height / 2, y), 10).data({"name": key, "id": key.replace(" ", "_").replace(".","_")});
 
             st.push(point);
-            $("<span>").html(key).attr("id", value).attr("style", "position:fixed;top:" + (30 * value) + "px;right:" + 20 + "px;").addClass("tech").appendTo("#container");
-            $("#" + value).on("mouseenter", function () {
+            $("<span>").html(key).attr({id: point.data("id"), class: "tech"}).appendTo(techsContainer);
+            $("#" + point.data("id")).on("mouseenter", function () {
+                console.log(this);
                 point.animate({fill: "red"}, 500);
             });
-            $("#" + value).on("mouseout", function () {
+            $("#" + point.data("id")).on("click",function(){
+                console.log(this);
+
+            });
+            $("#" + point.data("id")).on("mouseout", function () {
                 point.animate({fill: "#9ACD32"}, 500);
             });
         });
@@ -88,18 +152,8 @@
         c1.attr({stroke: "#FFF", "stroke-width": 2});
         c.attr({stroke: "#FFF", "stroke-width": 2});
 
-        var data = {
-            "Spring": 1,
-            "JSP": 2,
-            "Gradle": 3,
-            "Servlet": 4,
-            "YUI": 6,
-            "jQuery": 7,
-            "Omniture": 11,
-            "Cucumber": 12
-        }
-
         var web_dev = {
+            id: "web_development",
             name: "Web development",
             data: {
                 "Spring": 1,
@@ -111,12 +165,13 @@
                 "backbone.js": 7,
                 "zepto.js": 8,
                 "mustache.js": 9,
-                "mustache(java)": 10
+                "mustache java": 10
             }
         }
 
         var general = {
-            name: "",
+            id: "general",
+            name: "General",
             data: {
                 "Java": 1,
                 "Ruby": 2,
@@ -128,7 +183,8 @@
             }
         }
         var build_and_deploy_tools = {
-            name: "",
+            id: "build",
+            name: "Build & Deploy tools",
             data: {
                 "gradle": 1,
                 "buildr": 2,
@@ -144,7 +200,8 @@
             }
         }
         var test = {
-            name: "",
+            id: "test",
+            name: "Test",
             data: {
                 "junit": 1,
                 "cucumber": 2,
@@ -152,14 +209,20 @@
                 "selenuim": 4,
                 "jasmine": 5,
                 "jslint": 6,
-                "karma": 6
+                "karma": 7
             }
         }
-        drawPointForEachTech(data, maxRadius, paper, width, height);
+        drawPointForEachTech(general, maxRadius, paper, width, height, pointAtNegativeX, pointAtNegativeY);
+        drawPointForEachTech(web_dev, maxRadius, paper, width, height, pointAtPositiveX, pointAtNegativeY);
+        drawPointForEachTech(test, maxRadius, paper, width, height, pointAtPositiveX, pointAtPositiveY);
+        drawPointForEachTech(build_and_deploy_tools, maxRadius, paper, width, height, pointAtNegativeX, pointAtPositiveY);
     };
 </script>
-<span class="tech"></span>
-
-<div id="container"></div>
+<div id="container">
+    <div id="general" class="tech-group"><h2>General</h2></div>
+    <div id="web_development" class="tech-group"><h2>Web development</h2></div>
+    <div id="build" class="tech-group"><h2>Build & Deploy tools</h2></div>
+    <div id="test" class="tech-group"><h2>Test</h2></div>
+</div>
 </body>
 </html>
